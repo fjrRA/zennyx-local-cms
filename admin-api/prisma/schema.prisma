@@ -1,0 +1,218 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MediaType {
+  IMAGE
+  GIF
+  VIDEO
+  AUDIO
+  DOCUMENT
+  OTHER
+}
+
+enum DevlogCategory {
+  Studio
+  Development
+  Production
+  Design
+  Prototype
+  Milestone
+  Reflection
+  Technical
+}
+
+model SiteConfig {
+  id Int @id @default(autoincrement())
+
+  siteName String @db.VarChar(160)
+  shortName String @db.VarChar(80)
+  type String @db.VarChar(120)
+  stage String @db.VarChar(160)
+  country String @db.VarChar(80)
+  language String @db.VarChar(10)
+  siteUrl String @db.VarChar(255)
+
+  tagline Json
+  positioning Json
+  description Json
+  coreMessage Json
+
+  studioPrinciples Json
+  toneOfVoice Json
+
+  home Json
+  about Json
+  footer Json
+  seo Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Game {
+  id Int @id @default(autoincrement())
+
+  title String @db.VarChar(180)
+  slug String @unique @db.VarChar(140)
+
+  status String @db.VarChar(120)
+  productionType String @db.VarChar(160)
+
+  isFeatured Boolean @default(false)
+  isPublic Boolean @default(false)
+  order Int @default(0)
+
+  summary String @db.Text
+  shortDescription String @db.Text
+  description String @db.Text
+
+  genre Json
+  theme Json
+  setting Json
+  platforms Json
+
+  targetBuild String @db.VarChar(120)
+  targetRelease String @db.VarChar(120)
+
+  developmentStage Json
+  gameplayFocus Json
+
+  prototypeScope Json
+  deferredFeatures Json
+
+  media Json
+  links Json
+
+  relatedDevlogs Json
+  seo Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  devlogs Devlog[]
+  mediaAssets MediaAsset[]
+
+  @@index([isFeatured])
+  @@index([isPublic])
+  @@index([order])
+}
+
+model Devlog {
+  id Int @id @default(autoincrement())
+
+  title String @db.VarChar(180)
+  slug String @unique @db.VarChar(140)
+  date DateTime
+
+  category DevlogCategory
+  summary String @db.Text
+
+  relatedGame String? @db.VarChar(140)
+
+  isFeatured Boolean @default(false)
+  isPublished Boolean @default(false)
+
+  content String @db.Text
+
+  gameId Int?
+  game Game? @relation(fields: [gameId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mediaAssets MediaAsset[]
+
+  @@index([date])
+  @@index([category])
+  @@index([isFeatured])
+  @@index([isPublished])
+  @@index([relatedGame])
+  @@index([gameId])
+}
+
+model TeamMember {
+  id Int @id @default(autoincrement())
+
+  name String @db.VarChar(120)
+  slug String @unique @db.VarChar(120)
+
+  role String @db.VarChar(120)
+  displayRole String @db.VarChar(180)
+  location String? @db.VarChar(120)
+
+  avatar String? @db.VarChar(255)
+
+  shortBio String @db.Text
+  bio String @db.Text
+
+  responsibilities Json
+  socials Json
+
+  isFounder Boolean @default(false)
+  isActive Boolean @default(true)
+  order Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isFounder])
+  @@index([isActive])
+  @@index([order])
+}
+
+model SocialConfig {
+  id Int @id @default(autoincrement())
+
+  primaryContact Json
+  contactMessage Json
+  links Json
+  cta Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MediaAsset {
+  id Int @id @default(autoincrement())
+
+  filename String @db.VarChar(255)
+  originalName String? @db.VarChar(255)
+
+  altText String? @db.VarChar(255)
+  caption String? @db.VarChar(255)
+
+  mediaType MediaType @default(IMAGE)
+
+  sourcePath String? @db.VarChar(500)
+  publicPath String @db.VarChar(500)
+
+  gameId Int?
+  game Game? @relation(fields: [gameId], references: [id], onDelete: SetNull)
+
+  devlogId Int?
+  devlog Devlog? @relation(fields: [devlogId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([mediaType])
+  @@index([gameId])
+  @@index([devlogId])
+}

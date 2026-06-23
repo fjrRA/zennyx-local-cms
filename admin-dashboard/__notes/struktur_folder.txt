@@ -1,0 +1,108 @@
+Struktur folder zennyx-local-cms bagian admin-dashboard
+📁 --> folder
+📄 --> file
+
+📁 zennyx-local-cms/admin-dashboard
+|- 📁__notes
+   |- 📄struktur_folder.txt
+|- 📁dist
+   |- 📁assets
+   |- 📄favicon.svg
+   |- 📄icons.svg
+   |- 📄index.html
+|- 📁node_modules
+|- 📁public
+   |- 📄favicon.svg
+   |- 📄icons.svg
+|- 📁src
+   |- 📁assets
+      |- 📄hero.png
+      |- 📄favicon.svg
+      |- 📄icons.svg
+   |- 📁components
+      |- 📁layout
+         |- 📄Sidebar.tsx
+         |- 📄SidebarNavItem.tsx
+         |- 📄Topbar.tsx
+      |- 📁ui
+         |- 📄PagePlaceHolder.tsx
+   |- 📁features
+      |- 📁dashboard
+         |- 📁api
+            |- 📄dashboard.service.ts
+         |- 📁components
+            |- 📄DashboardStatsGrid.tsx
+            |- 📄DashboardSummary.tsx
+            |- 📄DashboardSummaryDebug.tsx
+            |- 📄DashboardSummaryError.tsx
+            |- 📄DashboardSummaryHeader.tsx
+            |- 📄DashboardSummaryLoading.tsx
+            |- 📄SiteConfigurationCard.tsx
+            |- 📄SummaryCard.tsx
+         |- 📁hooks
+            |- 📄useDashboardSummary.ts
+         |- 📁utils
+            |- 📄format-update-at.ts
+         |- 📄dashboard.types.ts
+      |- 📁export
+         |- 📁api
+            |- export.service.ts
+         |- 📁components
+            |- 📄ExportBackendStatus.tsx
+            |- 📄ExportConfirmation.tsx
+            |- 📄ExportCountsGrid.tsx
+            |- 📄ExportErrorResult.tsx
+            |- 📄ExportPanelFeedback.tsx
+            |- 📄ExportPanelHeader.tsx
+            |- 📄ExportProcessOverview.tsx
+            |- 📄ExportResult.tsx
+            |- 📄ExportSuccessResult.tsx
+            |- 📄ExportToWebsitePanel.tsx
+         |- 📁hooks
+            |- 📄useWebsiteExport.ts
+            |- 📄useWebsiteExportStatus.ts
+         |- 📄export.types.ts
+      |- 📁system
+         |- 📁api-connection
+            |- api-connection.types.ts
+            |- ApiConnectionStatus.tsx
+            |- ApiConnectionTest.tsx
+            |- useApiConnectionTest.ts
+   |- 📁layouts
+      |- 📄AdminLayout.tsx
+   |- 📁lib
+      |- 📁api
+         |- 📄api-client.ts
+         |- 📄api-config.ts
+         |- 📄api-error.ts
+         |- 📄api-response.ts
+         |- 📄api.types.ts
+         |- 📄index.ts
+   |- 📁pages
+      |- 📄DashboardPage.tsx
+      |- 📄DevlogsPage.tsx
+      |- 📄GamesPage.tsx
+      |- 📄NotFoundPage.tsx
+      |- 📄SitePage.tsx
+      |- 📄SocialsPage.tsx
+      |- 📄TeamPage.tsx
+   |- 📁router
+      |- AppRouter.tsx
+   |- 📁types
+   |- 📄App.tsx
+   |- 📄App.css
+   |- 📄index.css
+   |- 📄main.tsx
+   |- 📄vite-env.d.ts
+|- 📄.env.local
+|- 📄.env.example
+|- 📄.gitignore
+|- 📄eslint.config.js
+|- 📄index.html
+|- 📄package-lock.json
+|- 📄package.json
+|- 📄README.md
+|- 📄tsconfig.app.json
+|- 📄tsconfig.json
+|- 📄tsconfig.node.json
+|- 📄vite.config.ts

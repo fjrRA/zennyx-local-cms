@@ -1,0 +1,96 @@
+Struktur folder zennyx-local-cms bagian admin-api
+📁 --> folder
+📄 --> file
+
+📁 zennyx-local-cms bagian admin-api
+|- 📁__notes
+   |- 📄struktur_folder.txt
+|- 📁generated
+   |- 📁prisma
+      |- 📁internal
+         |- 📄class.ts
+         |- 📄prismaNamespace.ts
+         |- 📄prismaNamespaceBrowser.ts
+      |- 📁models
+         |- 📄Devlog.ts
+         |- 📄Game.ts
+         |- 📄MediaAsset.ts
+         |- 📄SiteConfig.ts
+         |- 📄SocialConfig.ts
+         |- 📄TeamMember.ts
+      |- 📄browser.ts
+      |- 📄client.ts
+      |- 📄commonInputTypes.ts
+      |- 📄enum.ts
+      |- 📄models.ts
+|- 📁node_modules
+|- 📁prisma
+   |- 📁migration
+   |- 📁migration
+      |- 📄devlogs.seed.ts
+      |- 📄games.seed.ts
+      |- 📄index.ts
+      |- 📄seed.types.ts
+      |- 📄seed.utils.ts
+      |- 📄site.seed.ts
+      |- 📄socials.seed.ts
+      |- 📄team.seed.ts
+   |- 📄check-data.ts
+   |- 📄schema.prisma
+   |- 📄seed.ts
+|- 📁src
+   |- 📁constants
+      |- 📄devlog.constants.ts
+   |- 📁controllers
+      |- 📄devlog.controllers.ts
+      |- 📄export.controllers.ts
+      |- 📄game.controllers.ts
+   |- 📁exporters
+      |- 📄devlog.exporter.ts
+      |- 📄game.exporters.ts
+      |- 📄index.ts
+      |- 📄site.exporter.ts
+      |- 📄socials.exporter.ts
+      |- 📄team.exporter.ts
+   |- 📁lib
+      |- 📄prisma.ts
+      |- 📄website-root.ts
+   |- 📁middlewares
+      |- 📄validate.ts
+   |- 📁routes
+      |- 📄devlog.routes.ts
+      |- 📄export.routes.ts
+      |- 📄games.routes.ts
+      |- 📄health.routes.ts
+      |- 📄site.routes.ts
+      |- 📄socials.routes.ts
+      |- 📄team.routes.ts
+   |- 📁schemas
+      |- 📄devlog.schema.ts
+      |- 📄game.schema.ts
+   |- 📁scripts
+      |- 📄export-all-preview.ts
+      |- 📄export-all-website.ts
+      |- 📄export-devlogs-preview.ts
+      |- 📄export-games-preview.ts
+      |- 📄export-site-prview.ts
+      |- 📄export-socials-preview.ts
+      |- 📄export-team-preview.ts
+   |- 📁services
+      |- 📁website-export
+         |- 📄constants.ts
+         |- 📄copy-to-website.ts
+         |- 📄export-job.services.ts
+         |- 📄types.ts
+         |- 📄validate-staging.ts
+         |- 📄website-export.services.ts
+      |- 📄devlog.services.ts
+      |- 📄game.services.ts
+   |- 📄app.ts
+   |- 📄server.ts
+|- 📄.env
+|- 📄.gitignore
+|- 📄package-lock.json
+|- 📄package.json
+|- 📄prismta.config.ts
+|- 📄tsconfig.json
