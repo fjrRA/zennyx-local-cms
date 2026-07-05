@@ -1,5 +1,10 @@
 // src/controller/game.controller.ts
 import type { Request, Response } from "express";
+
+import {
+  isPrismaUniqueConstraintError,
+} from "../lib/prisma-error";
+
 import {
   createGame,
   deleteGame,
@@ -9,6 +14,7 @@ import {
   parsePositiveId,
   updateGame,
 } from "../services/game.service";
+
 
 type IdParams = {
   id: string;
@@ -70,13 +76,36 @@ export async function getGameBySlugController(
   }
 }
 
-export async function createGameController(req: Request, res: Response) {
+export async function createGameController(
+  req: Request,
+  res: Response,
+) {
   try {
     const game = await createGame(req.body);
-    res.status(201).json(game);
+
+    return res.status(201).json(game);
   } catch (error) {
+    if (
+      isPrismaUniqueConstraintError(error)
+    ) {
+      return res.status(409).json({
+        message: "Validation error",
+        errors: {
+          formErrors: [],
+          fieldErrors: {
+            slug: [
+              "Slug Game sudah digunakan. Gunakan slug yang berbeda.",
+            ],
+          },
+        },
+      });
+    }
+
     console.error(error);
-    res.status(500).json({ message: "Failed to create game" });
+
+    return res.status(500).json({
+      message: "Failed to create game",
+    });
   }
 }
 
