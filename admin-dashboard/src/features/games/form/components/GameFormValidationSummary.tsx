@@ -47,7 +47,7 @@ export default function GameFormValidationSummary({
 
         <div className="min-w-0">
           <h2 className="font-semibold text-red-300">
-            Form belum dapat dilanjutkan
+            Form belum dapat disimpan
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-red-200/70">

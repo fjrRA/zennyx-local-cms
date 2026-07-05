@@ -9,6 +9,10 @@ export {
 } from "./CreateGameForm";
 
 export {
+  useCreateGameSubmit,
+} from "./hooks/useCreateGameSubmit";
+
+export {
   toCreateGameInput,
 } from "./game-form.mapper";
 

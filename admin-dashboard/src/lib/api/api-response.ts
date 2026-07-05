@@ -1,4 +1,5 @@
 // src/lib/api/api-response.ts
+
 function isRecord(
   value: unknown,
 ): value is Record<string, unknown> {
@@ -8,18 +9,27 @@ function isRecord(
 export async function parseResponseBody(
   response: Response,
 ): Promise<unknown> {
-  if (response.status === 204) {
+  if (
+    response.status === 204 ||
+    response.status === 205
+  ) {
+    return null;
+  }
+
+  const rawBody = await response.text();
+
+  if (!rawBody.trim()) {
     return null;
   }
 
   const contentType =
     response.headers.get("content-type") ?? "";
 
-  if (contentType.includes("application/json")) {
-    return response.json();
+  if (contentType.includes("json")) {
+    return JSON.parse(rawBody);
   }
 
-  return response.text();
+  return rawBody;
 }
 
 export function getResponseErrorMessage(
@@ -36,5 +46,9 @@ export function getResponseErrorMessage(
     }
   }
 
-  return `Request gagal: ${response.status} ${response.statusText}`;
+  const statusText = response.statusText
+    ? ` ${response.statusText}`
+    : "";
+
+  return `Request gagal: ${response.status}${statusText}`;
 }

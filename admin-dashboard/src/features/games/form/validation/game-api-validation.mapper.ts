@@ -1,4 +1,6 @@
-// src/features/games/form/validation/game-api-validation.mapper.ts
+// src/features/games/form/validation/
+// game-api-validation.mapper.ts
+
 import type {
   GameValidationErrorResponse,
 } from "../../game.types";
@@ -8,8 +10,10 @@ import type {
   GameFormFieldId,
 } from "./game-form-validation.types";
 
-const backendFieldMap:
-  Record<string, GameFormFieldId> = {
+const backendFieldMap: Record<
+  string,
+  GameFormFieldId
+> = {
   title: "game-title",
   slug: "game-slug",
   status: "game-status",
@@ -17,11 +21,8 @@ const backendFieldMap:
   productionType:
     "game-production-type",
 
-  isFeatured:
-    "game-is-featured" as GameFormFieldId,
-
-  isPublic:
-    "game-is-public" as GameFormFieldId,
+  isFeatured: "game-is-featured",
+  isPublic: "game-is-public",
 
   order: "game-order",
   summary: "game-summary",
@@ -78,8 +79,7 @@ export type MappedGameApiValidation = {
 export function mapGameApiValidation(
   response: GameValidationErrorResponse,
 ): MappedGameApiValidation {
-  const fieldErrors: GameFormErrors =
-    {};
+  const fieldErrors: GameFormErrors = {};
 
   const formErrors = [
     ...response.errors.formErrors,
@@ -99,12 +99,18 @@ export function mapGameApiValidation(
       backendFieldMap[backendField];
 
     if (!fieldId) {
-      formErrors.push(messages[0]);
+      formErrors.push(...messages);
       continue;
     }
 
-    fieldErrors[fieldId] =
-      messages[0];
+    fieldErrors[fieldId] = messages[0];
+  }
+
+  if (
+    formErrors.length === 0 &&
+    Object.keys(fieldErrors).length === 0
+  ) {
+    formErrors.push(response.message);
   }
 
   return {

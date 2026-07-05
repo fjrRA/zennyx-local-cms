@@ -23,6 +23,8 @@ export type GameFormFieldId =
   | "game-gameplay-title"
   | "game-gameplay-description"
   | "game-gameplay-points"
+  | "game-is-featured"
+  | "game-is-public"
   | "game-prototype-scope"
   | "game-deferred-features"
   | "game-media-hero-image"

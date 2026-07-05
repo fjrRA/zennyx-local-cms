@@ -1,4 +1,5 @@
 // src/lib/api/api-error.ts
+
 export class ApiError extends Error {
   readonly status: number;
   readonly data: unknown;
@@ -16,10 +17,27 @@ export class ApiError extends Error {
   }
 }
 
+export function isApiError(
+  error: unknown,
+): error is ApiError {
+  return error instanceof ApiError;
+}
+
+export function isAbortError(
+  error: unknown,
+): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    error.name === "AbortError"
+  );
+}
+
 export function getApiErrorMessage(
   error: unknown,
 ): string {
-  if (error instanceof ApiError) {
+  if (isApiError(error)) {
     return error.message;
   }
 

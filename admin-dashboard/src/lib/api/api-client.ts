@@ -1,6 +1,12 @@
 // src/lib/api/api-client.ts
+
 import { buildApiUrl } from "./api-config";
-import { ApiError } from "./api-error";
+
+import {
+  ApiError,
+  isAbortError,
+} from "./api-error";
+
 import {
   getResponseErrorMessage,
   parseResponseBody,
@@ -33,7 +39,10 @@ async function request<T>(
     body !== undefined &&
     !headers.has("Content-Type")
   ) {
-    headers.set("Content-Type", "application/json");
+    headers.set(
+      "Content-Type",
+      "application/json",
+    );
   }
 
   const fetchOptions: RequestInit = {
@@ -53,6 +62,10 @@ async function request<T>(
       fetchOptions,
     );
   } catch (error) {
+    if (isAbortError(error)) {
+      throw error;
+    }
+
     const detail =
       error instanceof Error
         ? error.message
@@ -65,7 +78,26 @@ async function request<T>(
     );
   }
 
-  const data = await parseResponseBody(response);
+  let data: unknown;
+
+  try {
+    data = await parseResponseBody(response);
+  } catch (error) {
+    if (isAbortError(error)) {
+      throw error;
+    }
+
+    const detail =
+      error instanceof Error
+        ? error.message
+        : "Unknown response parsing error";
+
+    throw new ApiError(
+      `Response API tidak dapat dibaca. ${detail}`,
+      response.status,
+      null,
+    );
+  }
 
   if (!response.ok) {
     throw new ApiError(

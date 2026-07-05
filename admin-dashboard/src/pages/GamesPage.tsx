@@ -3,13 +3,41 @@ import GamesContent from "../features/games/components/GamesContent";
 import {
   Plus,
 } from "lucide-react";
-import { Link } from "react-router";
+
+import {
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router";
+
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   useGames,
 } from "../features/games/hooks/useGames";
 
+import {
+  readGameCreatedNavigationState,
+} from "../features/games/utils/game-created-navigation-state";
+
+import GameCreatedNotice from "../features/games/components/GameCreatedNotice";
+
 export default function GamesPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [
+    createdGameState,
+    setCreatedGameState,
+  ] = useState(() =>
+    readGameCreatedNavigationState(
+      location.state,
+    ),
+  );
+
   const {
     games,
     error,
@@ -17,6 +45,30 @@ export default function GamesPage() {
     isError,
     retry,
   } = useGames();
+
+  useEffect(() => {
+    if (!createdGameState) {
+      return;
+    }
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash,
+      },
+      {
+        replace: true,
+        state: null,
+      },
+    );
+  }, [
+    createdGameState,
+    location.hash,
+    location.pathname,
+    location.search,
+    navigate,
+  ]);
 
   return (
     <section>
@@ -50,6 +102,20 @@ export default function GamesPage() {
       </div>
 
       <div className="mt-8">
+        {createdGameState ? (
+          <GameCreatedNotice
+            title={
+              createdGameState.createdGame.title
+            }
+            slug={
+              createdGameState.createdGame.slug
+            }
+            onDismiss={() => {
+              setCreatedGameState(null);
+            }}
+          />
+        ) : null}
+
         <GamesContent
           games={games}
           isLoading={isLoading}
