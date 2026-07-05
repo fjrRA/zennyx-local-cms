@@ -10,6 +10,10 @@ import {
   validateRequiredText,
 } from "./game-form-validation.helpers";
 
+import {
+  MAX_GAME_GALLERY_IMAGES,
+} from "../game-media.constants";
+
 import type {
   GameFormErrors,
 } from "./game-form-validation.types";
@@ -40,22 +44,31 @@ export function validateGamePublishing(
     "Cover Image",
   );
 
-  const invalidGalleryPath =
-    state.media.gallery.find(
-      (value) => {
-        const normalizedValue =
-          value.trim();
+  const normalizedGallery =
+    state.media.gallery
+      .map((value) => value.trim())
+      .filter(
+        (value) =>
+          value.length > 0,
+      );
 
-        return (
-          normalizedValue.length > 0 &&
-          !normalizedValue.startsWith("/")
-        );
-      },
-    );
-
-  if (invalidGalleryPath) {
+  if (
+    normalizedGallery.length >
+    MAX_GAME_GALLERY_IMAGES
+  ) {
     errors["game-media-gallery"] =
-      "Setiap Gallery Image harus menggunakan path yang diawali tanda /.";
+      `Gallery maksimal berisi ${MAX_GAME_GALLERY_IMAGES} gambar.`;
+  } else {
+    const invalidGalleryPath =
+      normalizedGallery.find(
+        (value) =>
+          !value.startsWith("/"),
+      );
+
+    if (invalidGalleryPath) {
+      errors["game-media-gallery"] =
+        "Setiap Gallery Image harus menggunakan path yang diawali tanda /.";
+    }
   }
 
   validateOptionalLink(

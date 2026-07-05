@@ -1,4 +1,10 @@
-// src/features/games/form/sections/GameSeoSection.tsx
+// src/features/games/form/sections/
+// GameSeoSection.tsx
+
+import {
+  ImageUploadField,
+} from "../../../media";
+
 import type {
   GameFormState,
 } from "../game-form.types";
@@ -6,6 +12,10 @@ import type {
 import type {
   GameSeoTextField,
 } from "../hooks/useGameFormPublishingActions";
+
+import {
+  useGameFormFieldError,
+} from "../hooks/useGameFormFieldError";
 
 import FormInputField from "../components/FormInputField";
 import FormTextareaField from "../components/FormTextareaField";
@@ -24,6 +34,14 @@ export default function GameSeoSection({
   state,
   onChange,
 }: GameSeoSectionProps) {
+  const ogImageError =
+    useGameFormFieldError(
+      "game-seo-og-image",
+    );
+
+  const gameTitle =
+    state.title.trim() || "Game";
+
   return (
     <GameFormSection
       title="SEO"
@@ -56,15 +74,23 @@ export default function GameSeoSection({
           rows={4}
         />
 
-        <FormInputField
+        <ImageUploadField
           id="game-seo-og-image"
           label="Open Graph Image"
+          slug={state.slug}
+          role="og-image"
           value={state.seo.ogImage}
-          onChange={(value) =>
-            onChange("ogImage", value)
+          validationError={
+            ogImageError
           }
-          placeholder="/og/game-slug-og.png"
-          helperText="Path gambar yang digunakan ketika halaman dibagikan."
+          description="Gambar yang ditampilkan ketika halaman Game dibagikan ke media sosial."
+          previewAlt={`Preview Open Graph Image ${gameTitle}`}
+          onValueChange={(publicPath) =>
+            onChange(
+              "ogImage",
+              publicPath,
+            )
+          }
         />
       </div>
     </GameFormSection>

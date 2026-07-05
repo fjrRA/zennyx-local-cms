@@ -23,8 +23,7 @@ export default function GameFormPublishingSections({
     removeListItem,
 
     updateMediaField,
-    updateMediaGalleryItem,
-    addMediaGalleryItem,
+    appendMediaGalleryItems,
     removeMediaGalleryItem,
 
     updateLinksField,
@@ -36,11 +35,8 @@ export default function GameFormPublishingSections({
       <GameMediaSection
         state={formState}
         onTextChange={updateMediaField}
-        onGalleryChange={
-          updateMediaGalleryItem
-        }
-        onAddGallery={
-          addMediaGalleryItem
+        onAppendGallery={
+          appendMediaGalleryItems
         }
         onRemoveGallery={
           removeMediaGalleryItem

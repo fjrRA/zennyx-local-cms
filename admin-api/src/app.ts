@@ -9,6 +9,15 @@ import devlogsRoutes from "./routes/devlogs.routes";
 import teamRoutes from "./routes/team.routes";
 import socialsRoutes from "./routes/socials.routes";
 import exportRoutes from "./routes/export.routes";
+import mediaRoutes from "./routes/media.routes";
+
+import {
+  MEDIA_PREVIEW_PREFIX,
+} from "./config/media.config";
+
+import {
+  mediaStaticMiddleware,
+} from "./middlewares/media-static";
 
 export const app = express();
 
@@ -16,6 +25,11 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
   })
+);
+
+app.use(
+  MEDIA_PREVIEW_PREFIX,
+  mediaStaticMiddleware,
 );
 
 app.use(express.json({ limit: "2mb" }));
@@ -27,3 +41,4 @@ app.use("/api/devlogs", devlogsRoutes);
 app.use("/api/team", teamRoutes);
 app.use("/api/socials", socialsRoutes);
 app.use("/api/export", exportRoutes);
+app.use("/api/media", mediaRoutes);

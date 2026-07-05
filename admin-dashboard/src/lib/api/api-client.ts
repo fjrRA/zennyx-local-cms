@@ -17,7 +17,26 @@ import type {
   MethodRequestOptions,
 } from "./api.types";
 
-type BodyMethod = "POST" | "PUT" | "PATCH";
+type BodyMethod =
+  | "POST"
+  | "PUT"
+  | "PATCH";
+
+function isFormDataBody(
+  body: unknown,
+): body is FormData {
+  return body instanceof FormData;
+}
+
+function createRequestBody(
+  body: unknown,
+): BodyInit {
+  if (isFormDataBody(body)) {
+    return body;
+  }
+
+  return JSON.stringify(body);
+}
 
 async function request<T>(
   path: string,
@@ -29,14 +48,25 @@ async function request<T>(
     ...requestOptions
   } = options;
 
-  const headers = new Headers(customHeaders);
+  const headers =
+    new Headers(customHeaders);
+
+  const hasBody =
+    body !== undefined;
+
+  const usesFormData =
+    isFormDataBody(body);
 
   if (!headers.has("Accept")) {
-    headers.set("Accept", "application/json");
+    headers.set(
+      "Accept",
+      "application/json",
+    );
   }
 
   if (
-    body !== undefined &&
+    hasBody &&
+    !usesFormData &&
     !headers.has("Content-Type")
   ) {
     headers.set(
@@ -50,8 +80,9 @@ async function request<T>(
     headers,
   };
 
-  if (body !== undefined) {
-    fetchOptions.body = JSON.stringify(body);
+  if (hasBody) {
+    fetchOptions.body =
+      createRequestBody(body);
   }
 
   let response: Response;
@@ -81,7 +112,10 @@ async function request<T>(
   let data: unknown;
 
   try {
-    data = await parseResponseBody(response);
+    data =
+      await parseResponseBody(
+        response,
+      );
   } catch (error) {
     if (isAbortError(error)) {
       throw error;
@@ -101,7 +135,10 @@ async function request<T>(
 
   if (!response.ok) {
     throw new ApiError(
-      getResponseErrorMessage(response, data),
+      getResponseErrorMessage(
+        response,
+        data,
+      ),
       response.status,
       data,
     );
@@ -110,36 +147,56 @@ async function request<T>(
   return data as T;
 }
 
-function requestWithBody<TResponse, TBody>(
+function requestWithBody<
+  TResponse,
+  TBody,
+>(
   method: BodyMethod,
   path: string,
   body: TBody | undefined,
   options: MethodRequestOptions,
 ): Promise<TResponse> {
-  return request<TResponse>(path, {
-    ...options,
-    method,
-    ...(body !== undefined ? { body } : {}),
-  });
+  return request<TResponse>(
+    path,
+    {
+      ...options,
+      method,
+
+      ...(body !== undefined
+        ? { body }
+        : {}),
+    },
+  );
 }
 
 export const apiClient = {
   get<T>(
     path: string,
-    options: MethodRequestOptions = {},
+    options:
+      MethodRequestOptions = {},
   ): Promise<T> {
-    return request<T>(path, {
-      ...options,
-      method: "GET",
-    });
+    return request<T>(
+      path,
+      {
+        ...options,
+        method: "GET",
+      },
+    );
   },
 
-  post<TResponse, TBody = unknown>(
+  post<
+    TResponse,
+    TBody = unknown,
+  >(
     path: string,
     body?: TBody,
-    options: MethodRequestOptions = {},
+    options:
+      MethodRequestOptions = {},
   ): Promise<TResponse> {
-    return requestWithBody<TResponse, TBody>(
+    return requestWithBody<
+      TResponse,
+      TBody
+    >(
       "POST",
       path,
       body,
@@ -147,12 +204,19 @@ export const apiClient = {
     );
   },
 
-  put<TResponse, TBody = unknown>(
+  put<
+    TResponse,
+    TBody = unknown,
+  >(
     path: string,
     body?: TBody,
-    options: MethodRequestOptions = {},
+    options:
+      MethodRequestOptions = {},
   ): Promise<TResponse> {
-    return requestWithBody<TResponse, TBody>(
+    return requestWithBody<
+      TResponse,
+      TBody
+    >(
       "PUT",
       path,
       body,
@@ -160,12 +224,19 @@ export const apiClient = {
     );
   },
 
-  patch<TResponse, TBody = unknown>(
+  patch<
+    TResponse,
+    TBody = unknown,
+  >(
     path: string,
     body?: TBody,
-    options: MethodRequestOptions = {},
+    options:
+      MethodRequestOptions = {},
   ): Promise<TResponse> {
-    return requestWithBody<TResponse, TBody>(
+    return requestWithBody<
+      TResponse,
+      TBody
+    >(
       "PATCH",
       path,
       body,
@@ -175,11 +246,15 @@ export const apiClient = {
 
   delete<T>(
     path: string,
-    options: MethodRequestOptions = {},
+    options:
+      MethodRequestOptions = {},
   ): Promise<T> {
-    return request<T>(path, {
-      ...options,
-      method: "DELETE",
-    });
+    return request<T>(
+      path,
+      {
+        ...options,
+        method: "DELETE",
+      },
+    );
   },
 };

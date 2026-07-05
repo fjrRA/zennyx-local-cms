@@ -53,7 +53,7 @@ export function createInitialGameFormState():
       heroImage: "",
       thumbnail: "",
       coverImage: "",
-      gallery: [""],
+      gallery: [],
     },
 
     links: {

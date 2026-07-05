@@ -1,4 +1,15 @@
-// src/features/games/form/sections/GameMediaSection.tsx
+// src/features/games/form/sections/
+// GameMediaSection.tsx
+
+import {
+  GalleryImageUploadField,
+  ImageUploadField,
+} from "../../../media";
+
+import {
+  MAX_GAME_GALLERY_IMAGES,
+} from "../game-media.constants";
+
 import type {
   GameFormState,
 } from "../game-form.types";
@@ -7,9 +18,11 @@ import type {
   GameMediaTextField,
 } from "../hooks/useGameFormPublishingActions";
 
-import FormInputField from "../components/FormInputField";
+import {
+  useGameFormFieldError,
+} from "../hooks/useGameFormFieldError";
+
 import GameFormSection from "../components/GameFormSection";
-import StringListField from "../components/StringListField";
 
 type GameMediaSectionProps = {
   state: GameFormState;
@@ -19,12 +32,9 @@ type GameMediaSectionProps = {
     value: string,
   ) => void;
 
-  onGalleryChange: (
-    index: number,
-    value: string,
+  onAppendGallery: (
+    publicPaths: string[],
   ) => void;
-
-  onAddGallery: () => void;
 
   onRemoveGallery: (
     index: number,
@@ -34,68 +44,113 @@ type GameMediaSectionProps = {
 export default function GameMediaSection({
   state,
   onTextChange,
-  onGalleryChange,
-  onAddGallery,
+  onAppendGallery,
   onRemoveGallery,
 }: GameMediaSectionProps) {
+  const heroImageError =
+    useGameFormFieldError(
+      "game-media-hero-image",
+    );
+
+  const thumbnailError =
+    useGameFormFieldError(
+      "game-media-thumbnail",
+    );
+
+  const coverImageError =
+    useGameFormFieldError(
+      "game-media-cover-image",
+    );
+
+  const galleryError =
+    useGameFormFieldError(
+      "game-media-gallery",
+    );
+
+  const gameTitle =
+    state.title.trim() || "Game";
+
   return (
     <GameFormSection
       title="Media"
-      description="Path gambar utama dan galeri untuk konten website."
+      description="Unggah gambar utama dan kelola galeri untuk konten website."
     >
-      <div className="grid gap-5 md:grid-cols-2">
-        <FormInputField
+      <div className="grid gap-5 xl:grid-cols-2">
+        <ImageUploadField
           id="game-media-hero-image"
           label="Hero Image"
+          slug={state.slug}
+          role="hero"
           value={state.media.heroImage}
-          onChange={(value) =>
+          validationError={
+            heroImageError
+          }
+          description="Gambar utama berukuran besar untuk halaman detail Game."
+          previewAlt={`Preview Hero Image ${gameTitle}`}
+          onValueChange={(publicPath) =>
             onTextChange(
               "heroImage",
-              value,
+              publicPath,
             )
           }
-          placeholder="/images/games/game-slug/hero.png"
-          helperText="Gunakan path file relatif dari folder public website."
         />
 
-        <FormInputField
+        <ImageUploadField
           id="game-media-thumbnail"
           label="Thumbnail"
+          slug={state.slug}
+          role="thumbnail"
           value={state.media.thumbnail}
-          onChange={(value) =>
+          validationError={
+            thumbnailError
+          }
+          description="Gambar ringkas untuk kartu dan daftar Game."
+          previewAlt={`Preview Thumbnail ${gameTitle}`}
+          onValueChange={(publicPath) =>
             onTextChange(
               "thumbnail",
-              value,
+              publicPath,
             )
           }
-          placeholder="/images/games/game-slug/thumb.png"
         />
 
-        <FormInputField
+        <ImageUploadField
           id="game-media-cover-image"
           label="Cover Image"
+          slug={state.slug}
+          role="cover"
           value={state.media.coverImage}
-          onChange={(value) =>
+          validationError={
+            coverImageError
+          }
+          description="Gambar sampul yang digunakan pada presentasi Game."
+          previewAlt={`Preview Cover Image ${gameTitle}`}
+          onValueChange={(publicPath) =>
             onTextChange(
               "coverImage",
-              value,
+              publicPath,
             )
           }
-          placeholder="/images/games/game-slug/cover.png"
         />
       </div>
 
       <div className="mt-6">
-        <StringListField
+        <GalleryImageUploadField
           id="game-media-gallery"
           label="Gallery Image"
-          description="Daftar path gambar tambahan untuk galeri Game."
+          description="Pilih beberapa gambar tambahan untuk Gallery Game. Gambar akan diunggah secara berurutan."
+          slug={state.slug}
           values={state.media.gallery}
-          onItemChange={
-            onGalleryChange
+          maxImages={
+            MAX_GAME_GALLERY_IMAGES
           }
-          onAddItem={onAddGallery}
-          onRemoveItem={
+          validationError={
+            galleryError
+          }
+          onUploaded={
+            onAppendGallery
+          }
+          onRemove={
             onRemoveGallery
           }
         />

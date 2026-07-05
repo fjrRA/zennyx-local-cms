@@ -1,13 +1,13 @@
-// src/features/games/form/hooks/useGameMediaActions.ts
+// src/features/games/form/hooks/
+// useGameMediaActions.ts
+
 import {
   useCallback,
 } from "react";
 
 import {
-  appendEmptyStringListItem,
-  removeStringListItem,
-  replaceStringListItem,
-} from "../game-form-list.helpers";
+  MAX_GAME_GALLERY_IMAGES,
+} from "../game-media.constants";
 
 import type {
   GameMediaFormState,
@@ -23,90 +23,127 @@ export type GameMediaTextField =
     "gallery"
   >;
 
+function normalizeGalleryPaths(
+  values: string[],
+): string[] {
+  return values
+    .map((value) => value.trim())
+    .filter(
+      (value) =>
+        value.length > 0,
+    );
+}
+
 export function useGameMediaActions(
   setFormState: SetGameFormState,
 ) {
-  const updateMediaField = useCallback(
-    (
-      field: GameMediaTextField,
-      value: string,
-    ) => {
-      setFormState((currentState) => ({
-        ...currentState,
-
-        media: {
-          ...currentState.media,
-          [field]: value,
-        },
-      }));
-    },
-    [setFormState],
-  );
-
-  const updateMediaGalleryItem =
+  const updateMediaField =
     useCallback(
       (
-        index: number,
+        field: GameMediaTextField,
         value: string,
       ) => {
-        setFormState((currentState) => ({
-          ...currentState,
+        setFormState(
+          (currentState) => ({
+            ...currentState,
 
-          media: {
-            ...currentState.media,
-
-            gallery:
-              replaceStringListItem(
-                currentState.media.gallery,
-                index,
-                value,
-              ),
-          },
-        }));
+            media: {
+              ...currentState.media,
+              [field]: value,
+            },
+          }),
+        );
       },
       [setFormState],
     );
 
-  const addMediaGalleryItem =
-    useCallback(() => {
-      setFormState((currentState) => ({
-        ...currentState,
+  const appendMediaGalleryItems =
+    useCallback(
+      (
+        publicPaths: string[],
+      ) => {
+        const normalizedNewPaths =
+          normalizeGalleryPaths(
+            publicPaths,
+          );
 
-        media: {
-          ...currentState.media,
+        if (
+          normalizedNewPaths.length ===
+          0
+        ) {
+          return;
+        }
 
-          gallery:
-            appendEmptyStringListItem(
-              currentState.media.gallery,
-            ),
-        },
-      }));
-    }, [setFormState]);
+        setFormState(
+          (currentState) => {
+            const currentPaths =
+              normalizeGalleryPaths(
+                currentState.media
+                  .gallery,
+              );
+
+            const availableSlots =
+              MAX_GAME_GALLERY_IMAGES -
+              currentPaths.length;
+
+            if (availableSlots <= 0) {
+              return currentState;
+            }
+
+            const acceptedPaths =
+              normalizedNewPaths.slice(
+                0,
+                availableSlots,
+              );
+
+            return {
+              ...currentState,
+
+              media: {
+                ...currentState.media,
+
+                gallery: [
+                  ...currentPaths,
+                  ...acceptedPaths,
+                ],
+              },
+            };
+          },
+        );
+      },
+      [setFormState],
+    );
 
   const removeMediaGalleryItem =
     useCallback(
       (index: number) => {
-        setFormState((currentState) => ({
-          ...currentState,
+        setFormState(
+          (currentState) => ({
+            ...currentState,
 
-          media: {
-            ...currentState.media,
+            media: {
+              ...currentState.media,
 
-            gallery:
-              removeStringListItem(
-                currentState.media.gallery,
-                index,
-              ),
-          },
-        }));
+              gallery:
+                currentState.media
+                  .gallery.filter(
+                    (
+                      _,
+                      currentIndex,
+                    ) =>
+                      currentIndex !==
+                      index,
+                  ),
+            },
+          }),
+        );
       },
       [setFormState],
     );
 
   return {
     updateMediaField,
-    updateMediaGalleryItem,
-    addMediaGalleryItem,
+    appendMediaGalleryItems,
     removeMediaGalleryItem,
   };
 }

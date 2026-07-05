@@ -31,3 +31,7 @@ temp/
 Thumbs.db
 
 *(.gitignore).txt
+
+# Local CMS media storage
+admin-api/storage/media/**
+!admin-api/storage/media/.gitkeep
